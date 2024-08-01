@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { Board, BoardStatus } from './board.model';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe';
 
 @Controller('boards')
 export class BoardsController {
@@ -13,6 +14,7 @@ export class BoardsController {
   }
 
   @Post()
+  @UsePipes(ValidationPipe) // NestJS Buint-in Pipe
   createBoard(
     // @Body('title') title: string,
     // @Body('description') description: string 
@@ -31,6 +33,17 @@ export class BoardsController {
   }
   */
 
+  /* 빈값으로 요청시 받은 파이프 응답
+    {
+    "message": [
+      "title should not be empty",
+      "description should not be empty"
+    ],
+    "error": "Bad Request",
+    "statusCode": 400
+  }
+  */
+
   @Get('/:id')
   getBoardById(@Param('id') id: string): Board {
     return this.boardsService.getBoardById(id);
@@ -44,7 +57,7 @@ export class BoardsController {
   @Patch('/:id/status')
   updateBoardStatus(
     @Param('id') id: string,
-    @Body('status') status: BoardStatus
+    @Body('status', BoardStatusValidationPipe) status: BoardStatus
   ) {
     return this.boardsService.updateBoardStatus(id, status);
   }
