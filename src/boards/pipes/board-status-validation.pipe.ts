@@ -1,5 +1,5 @@
 import { ArgumentMetadata, BadRequestException, PipeTransform } from "@nestjs/common";
-import { BoardStatus } from "../board.model";
+import { BoardStatus } from "../board-status.enum";
 
 // 커스텀 파이프: PUBLIC PRIVATE 만 들어오게 구현하기
 export class BoardStatusValidationPipe implements PipeTransform {
